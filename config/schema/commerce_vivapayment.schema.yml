@@ -1,0 +1,18 @@
+commerce_viva.commerce_payment_gateway.plugin.vivapayment_redirect_checkout:
+  type: commerce_payment_gateway_configuration
+  mapping:
+    merchant_id:
+      type: string
+      label: 'Merchant IDW'
+    api_key:
+      type: string
+      label: 'Secret keyW'
+    website_code:
+      type: string
+      label: 'Website code (source code)'
+    client_id:
+      type: string
+      label: 'Client ID'
+    client_secret:
+      type: string
+      label: 'Client Secret'
