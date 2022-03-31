@@ -9,76 +9,12 @@ use Drupal\Core\Url;
 use Drupal\Core\Language\LanguageInterface;
 use Drupal\commerce_viva\PluginForm\OffsiteRedirect;
 
-class FondyOffsiteForm extends BasePaymentOffsiteForm
+class VivaOffsiteForm extends BasePaymentOffsiteForm
 {
 
 public function get_code_url(){
   
-
-  //   $payment = $this->entity;
-  //   $amount = round(number_format($payment->getAmount()
-  //             ->getNumber(), 2, '.', '') * 100);
-  //   $order_id = \Drupal::routeMatch()->getParameter('commerce_order')->id();
-  //   $order = Order::load($order_id);
-  //   $address = $order->getBillingProfile()->address->first();
-  //     if ($payment->getOrder()->getCustomer()->isAnonymous() === FALSE) {
-  //       $description = t('Customer: ') . $payment->getOrder()
-  //       ->getCustomer()
-  //       ->getAccountName() . '. ' . t('Order #: ') . $order_id;
-  //   } else {
-  //         $description = t('Customer: anonymous');
-  //   }
-
-  //   $demo_url = 'https://demo.vivapayments.com/api/orders';
-  //   $api_key = $configuration['api_key'];
-  //   $mid = $configuration['merchant_id'];
-  //   $b64str = $mid.':'.$api_key;
-  //   $b64str_encode = base64_encode($b64str);
-  //   $website_code = $configuration['website_code'];
-
-
-  // // $order_info = json_encode([
-  // //   'amount' => $amount,
-  // //   'customerTrns' => $description,
-  // //   'customer'=> json_encode(['email' => $order->getEmail(),'fullName' => $address->getGivenName(),'phone' => '','countryCode' => '','requestLang' => 'en-GB']),
-  // //   'paymentNotification'=> true,
-  // //   'sourceCode' => $website_code
-  // // ]);
-
-  // $order_info = json_encode([
-  //   'amount' => $amount,
-  //   'email' => $order->getEmail(),
-  //   'fullName' => $address->getGivenName(),
-  //   'customerTrns' => $description,
-  //   'requestLang' => 'en-GB'
-  // ]);
-  
-  
-  // $curl = curl_init();
-  // curl_setopt_array($curl, array(
-  //   CURLOPT_URL => 'https://demo.vivapayments.com/api/orders',
-  //   CURLOPT_RETURNTRANSFER => true,
-  //   CURLOPT_MAXREDIRS => 10,
-  //   CURLOPT_TIMEOUT => 30,
-  //   CURLOPT_FOLLOWLOCATION => true,
-  //   CURLOPT_HTTP_VERSION => CURL_HTTP_VERSION_1_1,
-  //   CURLOPT_CUSTOMREQUEST => 'POST',
-  //   CURLOPT_POSTFIELDS => $order_info,
-  //   CURLOPT_HTTPHEADER => array(
-  //     'Authorization: Basic '.$b64str_encode,
-  //     'Content-Type: application/json'
-  //   ),
-  // ));
-
-  // $response = curl_exec($curl);
-  
-  // curl_close($curl);
-  // $response = json_decode($response, true);
-  // $code_url = $response['OrderCode'];
-  // $order_code_url = 'https://demo.vivapayments.com/web/checkout?ref='.$code_url;
-
-  // return $order_code_url;
-        //Viva
+  //Viva
         $payment = $this->entity;
         $amount = round(number_format($payment->getAmount()
               ->getNumber(), 2, '.', '') * 100);
@@ -144,6 +80,7 @@ public function get_code_url(){
     $code_url = $response['OrderCode'];
     $order_code_url = 'https://demo.vivapayments.com/web/checkout?ref='.$code_url;
     return $order_code_url;
+    
   //Viva
 }
       /**
@@ -171,7 +108,7 @@ public function get_code_url(){
     $configuration = $payment_gateway_plugin->getConfiguration();
 
     $redirect_method = 'post';
-    //$redirect_url = $this->get_code_url();
+    $redirect_url = $this->get_code_url();
     $mid = $configuration['merchant_id'];
     $api_key = $configuration['api_key'];
 
@@ -189,7 +126,6 @@ public function get_code_url(){
       $subscriber_id = '';
     }
     $callbackurl = $payment_gateway_plugin->getNotifyUrl()->toString();
-    echo $callbackurl;
     $responseurl = Url::FromRoute('commerce_payment.checkout.return', [
       'commerce_order' => $order_id,
       'step' => 'payment'

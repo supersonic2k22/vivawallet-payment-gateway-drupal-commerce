@@ -4,7 +4,7 @@
 
   use Drupal\commerce_payment\Plugin\Commerce\PaymentGateway\OffsitePaymentGatewayBase;
   use Drupal\Core\Form\FormStateInterface;
-  use Drupal\commerce_viva\PluginForm\OffsiteRedirect\FondyOffsiteForm;
+  use Drupal\commerce_viva\PluginForm\OffsiteRedirect\VivaOffsiteForm;
   use Drupal\Core\Language\LanguageInterface;
   use Drupal\commerce_order\Entity\OrderInterface;
   use Symfony\Component\HttpFoundation\Request;
@@ -18,37 +18,11 @@
    *   label = @Translation("VivaWallet (Redirect to payment page)"),
    *   display_label = @Translation("Viva Wallet"),
    *    forms = {
-   *     "offsite-payment" = "Drupal\commerce_viva\PluginForm\OffsiteRedirect\FondyOffsiteForm",
+   *     "offsite-payment" = "Drupal\commerce_viva\PluginForm\OffsiteRedirect\VivaOffsiteForm",
    *   },
    * )
    */
   class OffsiteRedirect extends OffsitePaymentGatewayBase {
-
-
-    public function success_transaction(){
-      $curl = curl_init();
-    
-      curl_setopt_array($curl, array(
-        CURLOPT_URL => 'https://demo.vivapayments.com/api/messages/config/token',
-        CURLOPT_RETURNTRANSFER => true,
-        CURLOPT_ENCODING => '',
-        CURLOPT_MAXREDIRS => 10,
-        CURLOPT_TIMEOUT => 0,
-        CURLOPT_FOLLOWLOCATION => true,
-        CURLOPT_HTTP_VERSION => CURL_HTTP_VERSION_1_1,
-        CURLOPT_CUSTOMREQUEST => 'GET',
-        CURLOPT_HTTPHEADER => array(
-          'Authorization: Basic MTQ3OTBhZGUtOWZkMS00MDlkLTkxZTQtMDBiOTA2OTNiMTRiOjk3R0NnXg=='
-        ),
-      ));
-      
-      $response = curl_exec($curl);
-      
-      curl_close($curl);
-      echo $response;
-      return $response;
-    
-    }
     
     /**
      * {@inheritdoc}
@@ -145,7 +119,7 @@
         'client_secret' => $this->configuration['client_secret']
       ];
       $data = $request->request->all();
-      list($orderId,) = explode(FondyOffsiteForm::ORDER_SEPARATOR, $data['order_id']);
+      list($orderId,) = explode(VivaOffsiteForm::ORDER_SEPARATOR, $data['order_id']);
       if ($this->isPaymentValid($settings, $data, $order) !== TRUE) {
         $this->messenger()->addMessage($this->t('Invalid Transaction. Please try again'), 'error');
         return $this->onCancel($order, $request);
@@ -188,7 +162,7 @@
       $data = $request->request->all();
       if (!$data)
         $data = $request->getContent();
-      list($orderId,) = explode(FondyOffsiteForm::ORDER_SEPARATOR, $data['order_id']);
+      list($orderId,) = explode(VivaOffsiteForm::ORDER_SEPARATOR, $data['order_id']);
       $order = Order::load($orderId);
       if ($this->isPaymentValid($settings, $data, $order) !== TRUE) {
         die($this->t('Invalid Transaction. Please try again'));
