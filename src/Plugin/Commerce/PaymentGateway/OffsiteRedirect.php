@@ -24,6 +24,32 @@
    */
   class OffsiteRedirect extends OffsitePaymentGatewayBase {
 
+
+    public function success_transaction(){
+      $curl = curl_init();
+    
+      curl_setopt_array($curl, array(
+        CURLOPT_URL => 'https://demo.vivapayments.com/api/messages/config/token',
+        CURLOPT_RETURNTRANSFER => true,
+        CURLOPT_ENCODING => '',
+        CURLOPT_MAXREDIRS => 10,
+        CURLOPT_TIMEOUT => 0,
+        CURLOPT_FOLLOWLOCATION => true,
+        CURLOPT_HTTP_VERSION => CURL_HTTP_VERSION_1_1,
+        CURLOPT_CUSTOMREQUEST => 'GET',
+        CURLOPT_HTTPHEADER => array(
+          'Authorization: Basic MTQ3OTBhZGUtOWZkMS00MDlkLTkxZTQtMDBiOTA2OTNiMTRiOjk3R0NnXg=='
+        ),
+      ));
+      
+      $response = curl_exec($curl);
+      
+      curl_close($curl);
+      echo $response;
+      return $response;
+    
+    }
+    
     /**
      * {@inheritdoc}
      */
@@ -132,8 +158,7 @@
           'payment_gateway' => $this->entityId,
           'order_id' => $orderId,
           'remote_id' => $data['payment_id'],
-          'remote_state' => $data['order_status'],
-          'sourceCode' => '3573',
+          'remote_state' => $data['order_status']
         ]);
         $payment->save();
         $this->messenger()->addMessage(
@@ -188,8 +213,7 @@
           'payment_gateway' => $this->entityId,
           'order_id' => $orderId,
           'remote_id' => $data['payment_id'],
-          'remote_state' => $data['order_status'],
-          'sourceCode' => '3573',
+          'remote_state' => $data['order_status']
         ]);
         $payment->save();
         die('Ok');
@@ -202,6 +226,7 @@
      *
      * @return bool
      */
+
     public function isPaymentValid($settings, $response, $order) {
       if (!$response) {
         return FALSE;
