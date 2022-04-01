@@ -1,0 +1,6 @@
+commerce_viva.order_success:
+  path: '/success-payment'
+  defaults:
+    _controller: '\Drupal\commerce_viva\Controller\PaymentCheckoutController::returnSuccessPage'
+  requirements:
+    _access: 'TRUE'
