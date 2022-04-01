@@ -109,137 +109,147 @@
      * @throws \Drupal\Component\Plugin\Exception\PluginNotFoundException
      * @throws \Drupal\Core\Entity\EntityStorageException
      */
-    public function onReturn(OrderInterface $order, Request $request) {
+//  public function onReturn(OrderInterface $order, Request $request) {
 
-      $settings = [
-        'api_key' => $this->configuration['api_key'],
-        'merchant_id' => $this->configuration['merchant_id'],
-        'website_code' => $this->configuration['website_code'],
-        'client_id' => $this->configuration['client_id'],
-        'client_secret' => $this->configuration['client_secret']
-      ];
-      $data = $request->request->all();
-      list($orderId,) = explode(VivaOffsiteForm::ORDER_SEPARATOR, $data['order_id']);
-      if ($this->isPaymentValid($settings, $data, $order) !== TRUE) {
-        $this->messenger()->addMessage($this->t('Invalid Transaction. Please try again'), 'error');
-        return $this->onCancel($order, $request);
-      }
-      else {
-        $payment_storage = $this->entityTypeManager->getStorage('commerce_payment');
-        $payment = $payment_storage->create([
-          'state' => 'completed',
-          'amount' => $order->getTotalPrice(),
-          'payment_gateway' => $this->entityId,
-          'order_id' => $orderId,
-          'remote_id' => $data['payment_id'],
-          'remote_state' => $data['order_status']
-        ]);
-        $payment->save();
-        $this->messenger()->addMessage(
-          $this->t('Your payment was successful with Order id : @orderid and Transaction id : @payment_id',
-            [
-              '@orderid' => $order->id(),
-              '@payment_id' => $data['payment_id']
-            ]
-          ));
-      }
-    }
+//    $settings = [
+//      'api_key' => $this->configuration['api_key'],
+//      'merchant_id' => $this->configuration['merchant_id'],
+//      'website_code' => $this->configuration['website_code'],
+//      'client_id' => $this->configuration['client_id'],
+//      'client_secret' => $this->configuration['client_secret']
+//    ];
+//    $data = $request->request->all();
+//    list($orderId,) = explode(VivaOffsiteForm::ORDER_SEPARATOR, $data['order_id']);
+//    if ($this->isPaymentValid($settings, $data, $order) !== TRUE) {
+//      $this->messenger()->addMessage($this->t('Invalid Transaction. Please try again'), 'error');
+//      return $this->onCancel($order, $request);
+//    }
+//    else {
+//      $payment_storage = $this->entityTypeManager->getStorage('commerce_payment');
+//      $payment = $payment_storage->create([
+//        'state' => 'completed',
+//        'amount' => $order->getTotalPrice(),
+//        'payment_gateway' => $this->entityId,
+//        'order_id' => $orderId,
+//        'remote_id' => $data['payment_id'],
+//        'remote_state' => $data['order_status']
+//      ]);
+//      $payment->save();
+//      $this->messenger()->addMessage(
+//        $this->t('Your payment was successful with Order id : @orderid and Transaction id : @payment_id',
+//          [
+//            '@orderid' => $order->id(),
+//            '@payment_id' => $data['payment_id']
+//          ]
+//        ));
+//    }
+//  }
 
-    /**
-     * @param Request $request
-     * @throws \Drupal\Component\Plugin\Exception\InvalidPluginDefinitionException
-     * @throws \Drupal\Component\Plugin\Exception\PluginNotFoundException
-     * @throws \Drupal\Core\Entity\EntityStorageException
-     */
-    public function onNotify(Request $request) {
-      $settings = [
-        'api_key' => $this->configuration['api_key'],
-        'merchant_id' => $this->configuration['merchant_id'],
-        'website_code' => $this->configuration['website_code'],
-        'client_id' => $this->configuration['client_id'],
-        'client_secret' => $this->configuration['client_secret']
-      ];
-      $data = $request->request->all();
-      if (!$data)
-        $data = $request->getContent();
-      list($orderId,) = explode(VivaOffsiteForm::ORDER_SEPARATOR, $data['order_id']);
-      $order = Order::load($orderId);
-      if ($this->isPaymentValid($settings, $data, $order) !== TRUE) {
-        die($this->t('Invalid Transaction. Please try again'));
-      }
-      else {
-        $payment_storage = $this->entityTypeManager->getStorage('commerce_payment');
-        if ($data['order_status'] == 'expired' or $data['order_status'] == 'declined') {
-          $order->set('state', 'cancelled');
-          $order->save();
-        }
-        $last = $payment_storage->loadByProperties([
-          'payment_gateway' => $this->entityId,
-          'order_id' => $orderId,
-          'remote_id' => $data['payment_id']
-        ]);
-        if (!empty($last)) {
-          $payment_storage->delete($last);
-        }
-        $payment = $payment_storage->create([
-          'state' => 'completed',
-          'amount' => $order->getTotalPrice(),
-          'payment_gateway' => $this->entityId,
-          'order_id' => $orderId,
-          'remote_id' => $data['payment_id'],
-          'remote_state' => $data['order_status']
-        ]);
-        $payment->save();
-        die('Ok');
-      }
-    }
+//  /**
+//   * @param Request $request
+//   * @throws \Drupal\Component\Plugin\Exception\InvalidPluginDefinitionException
+//   * @throws \Drupal\Component\Plugin\Exception\PluginNotFoundException
+//   * @throws \Drupal\Core\Entity\EntityStorageException
+//   */
+//  public function onNotify(Request $request) {
+//    $settings = [
+//      'api_key' => $this->configuration['api_key'],
+//      'merchant_id' => $this->configuration['merchant_id'],
+//      'website_code' => $this->configuration['website_code'],
+//      'client_id' => $this->configuration['client_id'],
+//      'client_secret' => $this->configuration['client_secret']
+//    ];
+//    $data = $request->request->all();
+//    if (!$data)
+//      $data = $request->getContent();
+//    list($orderId,) = explode(VivaOffsiteForm::ORDER_SEPARATOR, $data['order_id']);
+//    $order = Order::load($orderId);
+//    if ($this->isPaymentValid($settings, $data, $order) !== TRUE) {
+//      die($this->t('Invalid Transaction. Please try again'));
+//    }
+//    else {
+//      $payment_storage = $this->entityTypeManager->getStorage('commerce_payment');
+//      if ($data['order_status'] == 'expired' or $data['order_status'] == 'declined') {
+//        $order->set('state', 'cancelled');
+//        $order->save();
+//      }
+//      $last = $payment_storage->loadByProperties([
+//        'payment_gateway' => $this->entityId,
+//        'order_id' => $orderId,
+//        'remote_id' => $data['payment_id']
+//      ]);
+//      if (!empty($last)) {
+//        $payment_storage->delete($last);
+//      }
+//      $payment = $payment_storage->create([
+//        'state' => 'completed',
+//        'amount' => $order->getTotalPrice(),
+//        'payment_gateway' => $this->entityId,
+//        'order_id' => $orderId,
+//        'remote_id' => $data['payment_id'],
+//        'remote_state' => $data['order_status']
+//      ]);
+//      $payment->save();
+//      die('Ok');
+//    }
+//  }
 
-    /**
-     * @param $settings
-     * @param $response
-     *
-     * @return bool
-     */
+//     /**
+//      * @param $settings
+//      * @param $response
+//      *
+//      * @return bool
+//      */
 
-    public function isPaymentValid($settings, $response, $order) {
-      if (!$response) {
-        return FALSE;
-      }
-      if ($settings['merchant_id'] != $response['merchant_id']) {
-        return FALSE;
-      }
-      $transaction_currency = $response['currency'];
-      $transaction_amount = $response['amount'] / 100;
-      $order_currency = $order->getTotalPrice()->getCurrencyCode();
-      $order_amount = $order->getTotalPrice()->getNumber();
+//  public function isPaymentValid($settings, $response, $order) {
+//    if (!$response) {
+//      return FALSE;
+//    }
+//    if ($settings['merchant_id'] != $response['merchant_id']) {
+//      return FALSE;
+//    }
+//    $transaction_currency = $response['currency'];
+//    $transaction_amount = $response['amount'] / 100;
+//    $order_currency = $order->getTotalPrice()->getCurrencyCode();
+//    $order_amount = $order->getTotalPrice()->getNumber();
 
-      if (!$this->validateSum($transaction_currency, $order_currency,
-        $transaction_amount, $order_amount)
-      ) {
-        return FALSE;
-      }
+//    if (!$this->validateSum($transaction_currency, $order_currency,
+//      $transaction_amount, $order_amount)
+//    ) {
+//      return FALSE;
+//    }
 
-      return TRUE;
-    }
+//    return TRUE;
+//  }
 
-    /**
-     * @param $transaction_currency
-     * @param $order_currency
-     * @param $transaction_amount
-     * @param $order_amount
-     *
-     * @return bool
-     */
-    protected function validateSum($transaction_currency, $order_currency,
-                                   $transaction_amount, $order_amount) {
-      if ($transaction_currency != $order_currency) {
-        return FALSE;
-      }
-      if ($transaction_amount != $order_amount) {
-        return FALSE;
-      }
+//  /**
+//   * @param $transaction_currency
+//   * @param $order_currency
+//   * @param $transaction_amount
+//   * @param $order_amount
+//   *
+//   * @return bool
+//   */
+//  protected function validateSum($transaction_currency, $order_currency,
+//                                 $transaction_amount, $order_amount) {
+//    if ($transaction_currency != $order_currency) {
+//      return FALSE;
+//    }
+//    if ($transaction_amount != $order_amount) {
+//      return FALSE;
+//    }
 
-      return TRUE;
-    }
+//    return TRUE;
+//  }
+
+// public function onReturn(OrderInterface $order, Request $request){
+
+// }
+
+// public function onCancel(OrderInterface $order, Request $request) {
+//   $this->messenger()->addMessage($this->t('You have canceled checkout at @gateway but may resume the checkout process here when you are ready.', [
+//     '@gateway' => $this->getDisplayLabel(),
+//   ]));
+// }
 
   }

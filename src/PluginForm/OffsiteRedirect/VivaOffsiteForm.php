@@ -49,13 +49,7 @@ public function get_code_url(){
           'requestLang' => 'en-GB',
           'sourceCode' => $website_code
         ]);
-       /* $order_info = '{
-          "amount": 100,
-          "email": "customer@domain.com",
-          "fullName": "Customer name",
-          "customerTrns": "Short description of items/services purchased to display to your customer",
-          "requestLang": "en-GB"
-        }';*/
+
         
   
     curl_setopt_array($curl, array(
@@ -130,42 +124,47 @@ public function get_code_url(){
       'commerce_order' => $order_id,
       'step' => 'payment'
     ], ['absolute' => TRUE])->toString();
-    echo $responseurl;
 
     $order = Order::load($order_id);
     $address = $order->getBillingProfile()->address->first();
     // Get the language of credit card form.
-    $language = $configuration['language'];
-    if ($language == LanguageInterface::LANGCODE_NOT_SPECIFIED &&
-      $customer = $order->getCustomer()
-    ) {
-      // Use account preferred language.
-      $language = $customer->getPreferredLangcode();
-    }
+    // $language = $configuration['language'];
+    // if ($language == LanguageInterface::LANGCODE_NOT_SPECIFIED &&
+    //   $customer = $order->getCustomer()
+    // ) {
+    //   // Use account preferred language.
+    //   $language = $customer->getPreferredLangcode();
+    // }
     $f_data = [
-      'merchant_id' => $mid,
-      'order_id' => $order_id . self::ORDER_SEPARATOR . time(),
-      'order_desc' => $description,
-      'amount' => $amount,
-      'merchant_data' => json_encode([
-        'subscriber_id' => $subscriber_id,
-        'custom_field_customer_name' => $address->getGivenName(),
-        'custom_field_customer_address' => $address->getAddressLine1(),
-        'custom_field_customer_city' => $address->getLocality(),
-        'custom_field_customer_country' => $address->getAdministrativeArea(),
-        'custom_field_customer_state' => $address->getCountryCode(),
-        'custom_field_customer_zip' => $address->getPostalCode(),
-        'custom_field_sender_email' => $order->getEmail()
-      ]),
-      'currency' => $currency_code,
-      'response_url' => $responseurl,
-      'server_callback_url' => $callbackurl,
-      'sender_email' => $order->getEmail(),
-      'lang' => strtolower($language)
+      // 'merchant_id' => $mid,
+      // 'order_id' => $order_id . self::ORDER_SEPARATOR . time(),
+      // 'order_desc' => $description,
+      // 'amount' => $amount,
+      // 'merchant_data' => json_encode([
+      //   'subscriber_id' => $subscriber_id,
+      //   'custom_field_customer_name' => $address->getGivenName(),
+      //   'custom_field_customer_address' => $address->getAddressLine1(),
+      //   'custom_field_customer_city' => $address->getLocality(),
+      //   'custom_field_customer_country' => $address->getAdministrativeArea(),
+      //   'custom_field_customer_state' => $address->getCountryCode(),
+      //   'custom_field_customer_zip' => $address->getPostalCode(),
+      //   'custom_field_sender_email' => $order->getEmail()
+      // ]),
+      // 'currency' => $currency_code,
+      // 'response_url' => $responseurl,
+      // 'server_callback_url' => $callbackurl,
+      // 'sender_email' => $order->getEmail()
     ];
 
-    $f_data['signature'] = self::getSignature($f_data,
-      $api_key);
+    // $ecommercePaymentRequest->setCancelurl($form['/en/error-payment']);
+    // $ecommercePaymentRequest->setBackurl($form['/en/error-payment']);
+
+    // $ecommercePaymentRequest->setAccepturl($form['/en/success-payment']);
+    // $ecommercePaymentRequest->setDeclineurl($form['/en/success-payment']);
+    // $ecommercePaymentRequest->setExceptionurl($form['/en/success-payment']);
+
+    // $f_data['signature'] = self::getSignature($f_data,
+    //   $api_key);
 
 
       //get code url
