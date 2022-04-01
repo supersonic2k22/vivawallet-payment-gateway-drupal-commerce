@@ -104,6 +104,7 @@ class VivaOffsiteForm extends BasePaymentOffsiteForm
 
     $f_data = [];
 
+
     return $this->buildRedirectForm(
       $form,
       $form_state,
