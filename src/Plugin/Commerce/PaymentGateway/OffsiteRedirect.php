@@ -242,14 +242,38 @@
 //    return TRUE;
 //  }
 
-// public function onReturn(OrderInterface $order, Request $request){
+ public function onReturn(OrderInterface $order, Request $request){
 
-// }
+ if (!empty($_GET['t'])) {
+  $payment_storage = $this->entityTypeManager->getStorage('commerce_payment');
+       $payment = $payment_storage->create([
+         'state' => 'completed',
+         'amount' => $order->getTotalPrice(),
+         'payment_gateway' => $this->entityId,
+         'order_id' => $orderId,
+         'remote_id' => $data['payment_id'],
+         'remote_state' => $data['order_status']
+       ]);
 
-// public function onCancel(OrderInterface $order, Request $request) {
-//   $this->messenger()->addMessage($this->t('You have canceled checkout at @gateway but may resume the checkout process here when you are ready.', [
-//     '@gateway' => $this->getDisplayLabel(),
-//   ]));
-// }
+        $payment->save();
+
+          // $this->messenger()->addMessage(
+          //        $this->t('Your payment was successful with Order id : @orderid and Transaction id : @payment_id',
+          //          [
+          //            '@orderid' => $order->id(),
+          //            '@payment_id' => $data['payment_id']
+          //          ]
+          //        ));
+ }
+
+
+
+}
+
+public function onCancel(OrderInterface $order, Request $request) {
+  if (!isset($_GET['t'])) {
+    return $this->onCancel($order, $request);
+}
+  }
 
   }

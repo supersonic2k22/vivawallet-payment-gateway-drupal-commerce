@@ -119,11 +119,11 @@ public function get_code_url(){
       $description = t('Customer: anonymous');
       $subscriber_id = '';
     }
-    $callbackurl = $payment_gateway_plugin->getNotifyUrl()->toString();
-    $responseurl = Url::FromRoute('commerce_payment.checkout.return', [
-      'commerce_order' => $order_id,
-      'step' => 'payment'
-    ], ['absolute' => TRUE])->toString();
+    // $callbackurl = $payment_gateway_plugin->getNotifyUrl()->toString();
+    // $responseurl = Url::FromRoute('commerce_payment.checkout.return', [
+    //   'commerce_order' => $order_id,
+    //   'step' => 'payment'
+    // ], ['absolute' => TRUE])->toString();
 
     $order = Order::load($order_id);
     $address = $order->getBillingProfile()->address->first();
@@ -182,20 +182,20 @@ public function get_code_url(){
    * @return string
    *
    */
-  public static function getSignature($data, $password, $encoded = TRUE)
-  {
-    $data = array_filter($data, function ($var) {
-      return $var !== '' && $var !== NULL;
-    });
-    ksort($data);
-    $str = $password;
-    foreach ($data as $v) {
-      $str .= self::SIGNATURE_SEPARATOR . $v;
-    }
-    if ($encoded) {
-      return sha1($str);
-    } else {
-      return $str;
-    }
-  }
+  // public static function getSignature($data, $password, $encoded = TRUE)
+  // {
+  //   $data = array_filter($data, function ($var) {
+  //     return $var !== '' && $var !== NULL;
+  //   });
+  //   ksort($data);
+  //   $str = $password;
+  //   foreach ($data as $v) {
+  //     $str .= self::SIGNATURE_SEPARATOR . $v;
+  //   }
+  //   if ($encoded) {
+  //     return sha1($str);
+  //   } else {
+  //     return $str;
+  //   }
+  // }
 }
