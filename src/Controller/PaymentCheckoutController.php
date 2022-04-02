@@ -104,7 +104,7 @@ class PaymentCheckoutController implements ContainerInjectionInterface
       $request->query->all(),
       1
     )));
-    return ['#markup' => 'Hello 123!'];
+    return ['#markup' => 'Error'];
   }
 
   public function retrieveTransaction($transaction_id)
