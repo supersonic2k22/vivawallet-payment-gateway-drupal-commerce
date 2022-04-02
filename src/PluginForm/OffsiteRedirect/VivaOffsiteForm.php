@@ -3,18 +3,16 @@
 namespace Drupal\commerce_viva\PluginForm\OffsiteRedirect;
 
 use Drupal\commerce_order\Entity\Order;
+use Drupal\commerce_payment\Entity\PaymentGatewayInterface;
 use Drupal\commerce_payment\PluginForm\PaymentOffsiteForm as BasePaymentOffsiteForm;
+use Drupal\commerce_viva\Plugin\Commerce\PaymentGateway\OffsiteRedirect;
 use Drupal\Core\Form\FormStateInterface;
-use Drupal\Core\Url;
-use Drupal\Core\Language\LanguageInterface;
-use Drupal\commerce_viva\PluginForm\OffsiteRedirect;
 
 class VivaOffsiteForm extends BasePaymentOffsiteForm
 {
 
   public function vivawalletOrderCode()
   {
-
     //Viva
     $payment = $this->entity;
     $amount = round(number_format($payment->getAmount()
@@ -35,44 +33,60 @@ class VivaOffsiteForm extends BasePaymentOffsiteForm
     $payment_gateway_plugin = $payment->getPaymentGateway()->getPlugin();
     $configuration = $payment_gateway_plugin->getConfiguration();
 
-    $mid = $configuration['merchant_id'];
-    $api_key = $configuration['api_key'];
     $website_code = $configuration['website_code'];
 
-    $b64str = $mid . ':' . $api_key;
-    $b64str_encode = base64_encode($b64str);
+    $basic_access_token = $payment_gateway_plugin->basicAuthAccessToken($payment_gateway_plugin);
+    $access_token  = $payment_gateway_plugin->oauthAccessToken();
 
-    $order_info = json_encode([
-      'amount' => $amount,
+    $customer_info = [
       'email' => $order->getEmail(),
       'fullName' => $address->getGivenName(),
-      'customerTrns' => $description,
-      'requestLang' => 'en-GB',
-      'sourceCode' => $website_code
+      //'phone' => '',
+      //'countryCode' => '',
+      //'requestLang' => 'en-GB'
+      ];
+
+    $order_info = json_encode([
+      'amount' => (int) $amount,
+      'customerTrns' => 'test',
+      'customer'=> $customer_info,
+      //'paymentTimeout'=> 0,
+      //'preauth'=> true,
+      //'allowRecurring'=> true,
+      //'maxInstallments'=> 0,
+      //'paymentNotification'=> true,
+      //'tipAmount'=> 1,
+      //'disableExactAmount' => true,
+      //'disableCash' => true,
+      //'disableWallet' => true,
+      'sourceCode' => $website_code,
+      'merchantTrns' => $order_id,
+      //'tags' => "string"
     ]);
 
+    $url = $payment_gateway_plugin->resolveUrl('demo-api','api','/checkout/v2/orders');
 
     curl_setopt_array($curl, array(
-      CURLOPT_URL => 'https://demo.vivapayments.com/api/orders',
+      CURLOPT_URL => $url,
       CURLOPT_RETURNTRANSFER => true,
+      CURLOPT_ENCODING => '',
       CURLOPT_MAXREDIRS => 10,
-      CURLOPT_TIMEOUT => 30,
+      CURLOPT_TIMEOUT => 0,
       CURLOPT_FOLLOWLOCATION => true,
       CURLOPT_HTTP_VERSION => CURL_HTTP_VERSION_1_1,
       CURLOPT_CUSTOMREQUEST => 'POST',
       CURLOPT_POSTFIELDS => $order_info,
       CURLOPT_HTTPHEADER => array(
-        'Content-Type: application/json',
-        'Authorization: Basic ' . $b64str_encode
+        'Authorization: Bearer '.$access_token,
+        'Content-Type: application/json'
       ),
     ));
 
     $response = curl_exec($curl);
-
     curl_close($curl);
 
     $response = json_decode($response, true);
-    $code_url = $response['OrderCode'];
+    $code_url = $response['orderCode'] ? : NULL;
 
     return $code_url;
 
@@ -81,8 +95,10 @@ class VivaOffsiteForm extends BasePaymentOffsiteForm
 
   public function generateCheckoutUrl(string $order_code)
   {
-
-    $order_code_url = 'https://demo.vivapayments.com/web/checkout?ref=' . $order_code;
+    $payment = $this->entity;
+    $payment_gateway_plugin = $payment->getPaymentGateway()->getPlugin();
+    $url = $payment_gateway_plugin->resolveUrl('demo','www','/web/checkout?ref=');
+    $order_code_url = $url.$order_code;
     return $order_code_url;
 
   }
@@ -93,7 +109,7 @@ class VivaOffsiteForm extends BasePaymentOffsiteForm
 
     $redirect_method = 'post';
     $order_code = $this->vivawalletOrderCode();
-    $redirect_url = $this->generateCheckoutUrl();
+    $redirect_url = $this->generateCheckoutUrl($order_code);
 
     $order_id = \Drupal::routeMatch()->getParameter('commerce_order')->id();
     $order = Order::load($order_id);
