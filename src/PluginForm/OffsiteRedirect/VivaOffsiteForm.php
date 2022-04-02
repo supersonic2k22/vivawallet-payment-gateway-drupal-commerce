@@ -48,7 +48,7 @@ class VivaOffsiteForm extends BasePaymentOffsiteForm
 
     $order_info = json_encode([
       'amount' => (int) $amount,
-      'customerTrns' => 'test',
+      'customerTrns' => $description,
       'customer'=> $customer_info,
       //'paymentTimeout'=> 0,
       //'preauth'=> true,
