@@ -15,12 +15,13 @@ INSTALLATION
 
 * Unzip archive then
 * Install module "{your_site}/admin/modules/install"
-
-1. Login as Admin in Drupal and choose Commerce -> Configuration -> Payment -> Payment Gateways -> Add payment gateway. You can enter your name, for example - Viva Wallet.
+1. Install plugin. Extended -> Select checkbox - "
+   Viva Wallet Commerce Payment Gateway", click install.
+2. Add new payment gateway. Login as Admin in Drupal and choose Commerce -> Configuration -> Payment -> Payment Gateways -> Add payment gateway. You can enter your name, for example - Viva Wallet.
 
 <img src="Screenshot_1.png" width='400px'>
 
-2. If you not see - Viva Wallet in options, please clean cache of site.
+3. If you not see - Viva Wallet in options, please clean cache of site.
 
 <img src="Screenshot_2.png" width='200px'>
 
