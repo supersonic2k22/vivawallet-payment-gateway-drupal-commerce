@@ -2,8 +2,7 @@ name: Viva Wallet Commerce Payment Gateway
 type: module
 description: 'Viva Wallet payment gateway.'
 package: Commerce
-core: 8.x
+core_version_requirment: ^9 || ^10
 dependencies:
   - commerce:commerce_payment
   - commerce:commerce
-core: '8.x'
