@@ -29,6 +29,6 @@ CONFIGURATION
 2. Enter you Client Id and Secret key from Viva Wallet Smart Checkout credentials.
 ![Screenshot][3]
 
-[1]: https://raw.githubusercontent.com/cloudipsp/drupal/master/for_drupal8.x_commerce2.x/Screenshot_1.png
-[2]: https://raw.githubusercontent.com/cloudipsp/drupal/master/for_drupal8.x_commerce2.x/Screenshot_2.png
-[3]: https://raw.githubusercontent.com/cloudipsp/drupal/master/for_drupal8.x_commerce2.x/Screenshot_3.png
+[1]: https://git.drupalcode.org/project/commerce_viva/-/blob/1.0.x/Screenshot_1.png
+[2]: https://git.drupalcode.org/project/commerce_viva/-/blob/1.0.x/Screenshot_1.png
+[3]: https://git.drupalcode.org/project/commerce_viva/-/blob/1.0.x/Screenshot_1.png
