@@ -32,4 +32,14 @@ CONFIGURATION
 1. Enter your Merchant Id and API key from Viva Wallet Merchant Portal.
 2. Enter you Client Id and Secret key from Viva Wallet Smart Checkout credentials.
 
+> Important: we have two modes - demo and live, so credentials must be different for both of modes
+>
+>Demo credentials here - https://demo.vivapayments.com/en/signup
+>
+> Live credentials here - https://app.vivawallet.com/register/
+
 <img src="Screenshot_3.png" width='400px'>
+
+>Website code you can see in Sales -> Online payments -> Websites/apps -> code
+>
+> <img src="Screenshot_4.png" width='400px'>
