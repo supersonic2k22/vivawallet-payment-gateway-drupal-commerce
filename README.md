@@ -21,9 +21,9 @@ INSTALLATION
 
 <img src="Screenshot_1.png" width='400px'>
 
-3. If you not see - Viva Wallet in options, please clean cache of site.
-
-<img src="Screenshot_2.png" width='200px'>
+> 3. If you not see - Viva Wallet in options, please clean cache of site.
+>
+><img src="Screenshot_2.png" width='200px'>
 
 
 CONFIGURATION
