@@ -190,6 +190,9 @@ class OffsiteRedirect extends OffsitePaymentGatewayBase {
     return 'https://' . $url . '.vivapayments.com' . $path;
   }
 
+  /**
+   * To get authentication access token.
+   */
   public function oauthAccessToken() {
     $configuration = $this->getConfiguration();
 

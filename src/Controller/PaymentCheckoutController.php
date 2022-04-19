@@ -5,6 +5,7 @@ namespace Drupal\commerce_viva\Controller;
 use Drupal\commerce_checkout\CheckoutOrderManagerInterface;
 use Drupal\Component\Serialization\Json;
 use Drupal\Core\DependencyInjection\ContainerInjectionInterface;
+use Drupal\Core\Entity\EntityTypeManagerInterface;
 use Drupal\Core\Messenger\MessengerInterface;
 use Drupal\Core\Routing\RouteMatchInterface;
 use Drupal\Core\Url;
@@ -40,6 +41,13 @@ class PaymentCheckoutController implements ContainerInjectionInterface {
   protected $logger;
 
   /**
+   * The entity type manager.
+   *
+   * @var \Drupal\Core\Entity\EntityTypeManagerInterface
+   */
+  protected $entityTypeManager;
+
+  /**
    * Constructs a new PaymentCheckoutController object.
    *
    * @param \Drupal\commerce_checkout\CheckoutOrderManagerInterface $checkout_order_manager
@@ -48,11 +56,19 @@ class PaymentCheckoutController implements ContainerInjectionInterface {
    *   The messenger.
    * @param \Psr\Log\LoggerInterface $logger
    *   The logger.
+   * @param \Drupal\Core\Entity\EntityTypeManagerInterface $entity_type_manager
+   *   The entity type manager.
    */
-  public function __construct(CheckoutOrderManagerInterface $checkout_order_manager, MessengerInterface $messenger, LoggerInterface $logger) {
+  public function __construct(
+    CheckoutOrderManagerInterface $checkout_order_manager,
+    MessengerInterface $messenger,
+    LoggerInterface $logger,
+    EntityTypeManagerInterface $entity_type_manager
+  ) {
     $this->checkoutOrderManager = $checkout_order_manager;
     $this->messenger = $messenger;
     $this->logger = $logger;
+    $this->entityTypeManager = $entity_type_manager;
   }
 
   /**
@@ -62,7 +78,8 @@ class PaymentCheckoutController implements ContainerInjectionInterface {
     return new static(
       $container->get('commerce_checkout.checkout_order_manager'),
       $container->get('messenger'),
-      $container->get('logger.channel.commerce_payment')
+      $container->get('logger.channel.commerce_payment'),
+      $container->get('entity_type.manager')
     );
   }
 
@@ -83,7 +100,7 @@ class PaymentCheckoutController implements ContainerInjectionInterface {
     )));
     $transaction_id = $request->query->get('t');
     $order = $this->retrieveTransaction($transaction_id);
-    // @todo:calculate success step from the order.
+    // @todo calculate success step from the order.
     $step = 'success';
     return new RedirectResponse(Url::fromRoute('commerce_payment.checkout.return', [
       'commerce_order' => $order->id(),
@@ -125,7 +142,7 @@ class PaymentCheckoutController implements ContainerInjectionInterface {
    */
   public function retrieveTransaction(string $transaction_id) {
     /** @var \Drupal\commerce_payment\PaymentGatewayStorage $payment_storage */
-    $payment_storage = \Drupal::entityTypeManager()->getStorage('commerce_payment_gateway');
+    $payment_storage = $this->entityTypeManager->getStorage('commerce_payment_gateway');
     /** @var \Drupal\commerce_payment\Entity\PaymentGatewayInterface $payment_viva */
     $payment_viva = $payment_storage->load('vivawallet');
     /** @var \Drupal\commerce_viva\Plugin\Commerce\PaymentGateway\OffsiteRedirect $payment_plugin */
@@ -151,7 +168,7 @@ class PaymentCheckoutController implements ContainerInjectionInterface {
 
     curl_close($curl);
     $response = Json::decode($response, TRUE);
-    $order_storage = \Drupal::entityTypeManager()->getStorage('commerce_order');
+    $order_storage = $this->entityTypeManager->getStorage('commerce_order');
     $orders = $order_storage->loadByProperties(['field_order_code' => $response['orderCode']]);
     $order = reset($orders);
     if ($response['statusId'] === "F") {
