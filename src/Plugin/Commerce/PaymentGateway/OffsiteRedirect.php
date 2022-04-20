@@ -8,10 +8,12 @@ use Drupal\commerce_payment\Plugin\Commerce\PaymentGateway\OffsitePaymentGateway
 use Drupal\commerce_price\MinorUnitsConverterInterface;
 use Drupal\Component\Datetime\TimeInterface;
 use Drupal\Component\Serialization\Json;
+use Drupal\Component\Utility\Html;
 use Drupal\Core\Entity\EntityTypeManagerInterface;
 use Drupal\Core\Form\FormStateInterface;
 use Drupal\commerce_order\Entity\OrderInterface;
 use Drupal\Core\Http\ClientFactory;
+use Drupal\Core\Url;
 use GuzzleHttp\RequestOptions;
 use Symfony\Component\DependencyInjection\ContainerInterface;
 use Symfony\Component\HttpFoundation\Request;
@@ -99,6 +101,52 @@ class OffsiteRedirect extends OffsitePaymentGatewayBase {
    */
   public function buildConfigurationForm(array $form, FormStateInterface $form_state) {
     $form = parent::buildConfigurationForm($form, $form_state);
+    $description = 'Use <a href=":link" target="_blank">:link</a> to manage appropriate account.';
+    $form['mode']['live']['#description'] = $this->t(
+      $description,
+      [
+        ':link' => 'https://www.vivapayments.com/selfcare/en/sources/paymentsources',
+      ]
+    );
+    $form['mode']['test']['#description'] = $this->t(
+      $description,
+      [
+        ':link' => 'https://demo.vivapayments.com/selfcare/en/sources/paymentsources',
+      ]
+    );
+
+    $form['info_wrapper'] = [
+      '#type' => 'container',
+      '#attributes' => ['id' => 'vivapayment_redirect_info'],
+    ];
+    $form['info_wrapper']['info'] = [
+      '#type' => 'details',
+      '#title' => $this->t('Account configuration info'),
+      '#open' => TRUE,
+      'redirect_link' => [
+        '#type' => 'html_tag',
+        '#tag' => 'p',
+        '#value' => $this->t(
+          'To successful work of plugin please use in redirect that links:<br /> - <b>%success_redirect</b> (for success) <br /> - <b>%error_redirect</b> (for failure)',
+          [
+            '%success_redirect' => Url::fromRoute(
+              'commerce_viva.order_success',
+              [],
+              [
+                'absolute' => TRUE,
+              ]
+            )->toString(),
+            '%error_redirect' => Url::fromRoute(
+              'commerce_viva.order_error',
+              [],
+              [
+                'absolute' => TRUE,
+              ]
+            )->toString(),
+          ]
+        ),
+      ],
+    ];
 
     $form['merchant_id'] = [
       '#type' => 'textfield',
@@ -226,6 +274,21 @@ class OffsiteRedirect extends OffsitePaymentGatewayBase {
     );
     $response = Json::decode($result->getBody()->getContents());
     return $response['access_token'];
+  }
+
+  /**
+   * Info block AJAX callback.
+   *
+   * @param array $form
+   *   Form array.
+   * @param \Drupal\Core\Form\FormStateInterface $form_state
+   *   Form state instance.
+   *
+   * @return mixed
+   *   Return content of info block.
+   */
+  public static function ajaxRefreshInfo(array $form, FormStateInterface $form_state) {
+    return $form['info_wrapper'];
   }
 
 }
