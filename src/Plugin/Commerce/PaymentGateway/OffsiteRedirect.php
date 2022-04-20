@@ -90,6 +90,7 @@ class OffsiteRedirect extends OffsitePaymentGatewayBase {
       'website_code' => '',
       'client_id' => '',
       'client_secret' => '',
+      'brand_color' => '',
     ] + parent::defaultConfiguration();
   }
 
@@ -139,6 +140,14 @@ class OffsiteRedirect extends OffsitePaymentGatewayBase {
       '#required' => TRUE,
     ];
 
+    $form['brand_color'] = [
+      '#type' => 'textfield',
+      '#title' => $this->t('Brand color'),
+      '#description' => $this->t('This is the Brand color for the Viva Wallet smart checkout (Hexadecimal)'),
+      '#default_value' => $this->configuration['brand_color'],
+      '#required' => FALSE,
+    ];
+
     return $form;
   }
 
@@ -154,6 +163,7 @@ class OffsiteRedirect extends OffsitePaymentGatewayBase {
       $this->configuration['website_code'] = $values['website_code'];
       $this->configuration['client_id'] = $values['client_id'];
       $this->configuration['client_secret'] = $values['client_secret'];
+      $this->configuration['brand_color'] = $values['brand_color'];
     }
   }
 
