@@ -8,7 +8,6 @@ use Drupal\commerce_payment\Plugin\Commerce\PaymentGateway\OffsitePaymentGateway
 use Drupal\commerce_price\MinorUnitsConverterInterface;
 use Drupal\Component\Datetime\TimeInterface;
 use Drupal\Component\Serialization\Json;
-use Drupal\Component\Utility\Html;
 use Drupal\Core\Entity\EntityTypeManagerInterface;
 use Drupal\Core\Form\FormStateInterface;
 use Drupal\commerce_order\Entity\OrderInterface;
@@ -115,11 +114,7 @@ class OffsiteRedirect extends OffsitePaymentGatewayBase {
       ]
     );
 
-    $form['info_wrapper'] = [
-      '#type' => 'container',
-      '#attributes' => ['id' => 'vivapayment_redirect_info'],
-    ];
-    $form['info_wrapper']['info'] = [
+    $form['info'] = [
       '#type' => 'details',
       '#title' => $this->t('Account configuration info'),
       '#open' => TRUE,
@@ -274,21 +269,6 @@ class OffsiteRedirect extends OffsitePaymentGatewayBase {
     );
     $response = Json::decode($result->getBody()->getContents());
     return $response['access_token'];
-  }
-
-  /**
-   * Info block AJAX callback.
-   *
-   * @param array $form
-   *   Form array.
-   * @param \Drupal\Core\Form\FormStateInterface $form_state
-   *   Form state instance.
-   *
-   * @return mixed
-   *   Return content of info block.
-   */
-  public static function ajaxRefreshInfo(array $form, FormStateInterface $form_state) {
-    return $form['info_wrapper'];
   }
 
 }

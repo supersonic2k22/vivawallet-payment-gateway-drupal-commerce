@@ -57,7 +57,7 @@ class VivaOffsiteForm extends BasePaymentOffsiteForm {
       'fullName' => $address->getGivenName() . ' ' . $address->getFamilyName(),
       // 'phone' => '',
       // 'countryCode' => '',
-      // 'requestLang' => 'en-GB'
+      'requestLang' => \Drupal::currentUser()->getPreferredLangcode(FALSE) ?: \Drupal::languageManager()->getCurrentLanguage()->getId(),
     ];
 
     $order_info = Json::encode([
@@ -120,7 +120,7 @@ class VivaOffsiteForm extends BasePaymentOffsiteForm {
     $url = $payment_gateway_plugin->resolveUrl('demo', 'www', '/web/checkout?ref=');
     $url .= $order_code;
     if ($brand_color) {
-        $url .= '&color=' . $brand_color;
+      $url .= '&color=' . $brand_color;
     }
     return $url;
 
