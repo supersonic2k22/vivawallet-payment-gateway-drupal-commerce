@@ -241,6 +241,8 @@ class OffsiteRedirect extends OffsitePaymentGatewayBase {
       $this->configuration['client_id'] = $values['client_id'];
       $this->configuration['client_secret'] = $values['client_secret'];
       $this->configuration['brand_color'] = $values['brand_color'];
+      $this->configuration['info'] = $values['info'];
+      $this->configuration['donation'] = $values['donation'];
     }
   }
 
