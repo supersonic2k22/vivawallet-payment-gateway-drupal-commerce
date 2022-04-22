@@ -144,20 +144,9 @@ class OffsiteRedirect extends OffsitePaymentGatewayBase {
     ];
 
     $paypal_button =
-    <<<END
+    echo <<<END
     <div id="donate-button-container">
     <div id="donate-button"></div>
-    <script>
-    PayPal.Donation.Button({
-    env:'production',
-    hosted_button_id:'L2PVSYTGQUECW',
-    image: {
-    src:'https://pics.paypal.com/00/s/MjdkYWY0NWYtOWY5Zi00ZTRkLThiZWEtMzYzM2NlY2EyYTE5/file.PNG',
-    alt:'Donate with PayPal button',
-    title:'PayPal - The safer, easier way to pay online!',
-    }
-    }).render('#donate-button');
-    </script>
     </div>
     END;
 
