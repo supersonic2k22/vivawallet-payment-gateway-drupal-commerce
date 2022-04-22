@@ -1,0 +1,3 @@
+donate-sdk.js:
+  js:
+    https://www.paypalobjects.com/donate/sdk/donate-sdk.js: { type: external, minified: true }

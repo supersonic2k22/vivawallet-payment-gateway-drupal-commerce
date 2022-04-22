@@ -92,8 +92,6 @@ class OffsiteRedirect extends OffsitePaymentGatewayBase {
       'client_id' => '',
       'client_secret' => '',
       'brand_color' => '',
-      'info' => '',
-      'donation' => '',
     ] + parent::defaultConfiguration();
   }
 
@@ -145,10 +143,9 @@ class OffsiteRedirect extends OffsitePaymentGatewayBase {
       ],
     ];
 
-    $paypal_button = <<<END
+    $paypal_button = echo <<<END
     <div id="donate-button-container">
     <div id="donate-button"></div>
-    <script src="https://www.paypalobjects.com/donate/sdk/donate-sdk.js" charset="UTF-8"></script>
     <script>
     PayPal.Donation.Button({
     env:'production',
@@ -166,7 +163,7 @@ class OffsiteRedirect extends OffsitePaymentGatewayBase {
     $form['donation'] = [
       '#type' => 'inline-template',
       '#context' => ['html' => $paypal_button],
-      '#template' => '{{ html|raw }}',
+      '#template' => '{{ html | raw }}',
     ];
 
 
@@ -234,8 +231,6 @@ class OffsiteRedirect extends OffsitePaymentGatewayBase {
       $this->configuration['client_id'] = $values['client_id'];
       $this->configuration['client_secret'] = $values['client_secret'];
       $this->configuration['brand_color'] = $values['brand_color'];
-      $this->configuration['info'] = $values['info'];
-      $this->configuration['donation'] = $values['donation'];
     }
   }
 
