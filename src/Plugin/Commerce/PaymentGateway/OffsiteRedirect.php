@@ -144,8 +144,6 @@ class OffsiteRedirect extends OffsitePaymentGatewayBase {
     ];
 
     $paypal_button ="
-    {{ attach_library('commerce_viva/donate-sdk.js') }}
-    {{ attach_library('commerce_viva/donate-sdk-inline.js') }}
     <div id=\"donate-button-container\">
     <div id=\"donate-button\"></div>
     </div>";
@@ -153,7 +151,10 @@ class OffsiteRedirect extends OffsitePaymentGatewayBase {
     $form['donation'] = [
       '#type' => 'inline_template',
       '#context' => ['html' => $paypal_button],
-      '#template' => '{{ html|raw }}',
+      '#template' => "
+      {{ attach_library('commerce_viva/donate-sdk.js') }}
+      {{ attach_library('commerce_viva/donate-sdk-inline.js') }}
+      {{ html|raw }}",
     ];
 
 
