@@ -164,8 +164,9 @@ class OffsiteRedirect extends OffsitePaymentGatewayBase {
     END;
 
     $form['donation'] = [
-      '#type' => 'markup',
-      '#markup' => $paypal_button
+      '#type' => 'inline-template',
+      '#context' => ['html' => $paypal_button],
+      '#template' => '{{html|raw}}',
     ];
 
 
