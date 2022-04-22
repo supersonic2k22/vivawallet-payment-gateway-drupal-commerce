@@ -123,7 +123,7 @@ class OffsiteRedirect extends OffsitePaymentGatewayBase {
       'redirect_link' => [
         '#type' => 'html_tag',
         '#tag' => 'p',
-        '#value' => $this->t(
+        '#default_value' => $this->t(
           'To successful work of plugin please use in redirect that links:<br /> - <b>%success_redirect</b> (for success) <br /> - <b>%error_redirect</b> (for failure)',
           [
             '%success_redirect' => Url::fromRoute(
@@ -165,15 +165,7 @@ class OffsiteRedirect extends OffsitePaymentGatewayBase {
 
     $form['donation'] = [
       '#type' => 'submit',
-      '#value' => $paypal_button,
-      '#attributes' => array('class' => array('btn', 'btn-mini')),
-      '#ajax' => array(
-        'callback' => 'druedu_homework_status_locked_assignment_ajax_callback',
-        'wrapper' => 'body',
-        'method' => 'append',
-        'effect' => 'fade',
-        'progress' => array('type' => 'throbber', 'message' => NULL),
-      ),
+      '#default_value' => $paypal_button
     ];
 
 
