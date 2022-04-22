@@ -5,4 +5,4 @@ donate-sdk-inline.js:
   js:
     src/assets/js/donate-sdk-inline.js: {}
   dependencies: 
-    - donate-sdk.js
+    - commerce_viva/donate-sdk.js
