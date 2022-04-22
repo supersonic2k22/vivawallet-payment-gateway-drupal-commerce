@@ -143,11 +143,9 @@ class OffsiteRedirect extends OffsitePaymentGatewayBase {
       ],
     ];
 
-    $paypal_button =<<<END
-    <div id="donate-button-container">
-    <div id="donate-button"></div>
-    </div>
-    END;
+    $paypal_button ="<div id=\"donate-button-container\">
+    <div id=\"donate-button\"></div>
+    </div>";
 
     $form['donation'] = [
       '#type' => 'inline_template',
