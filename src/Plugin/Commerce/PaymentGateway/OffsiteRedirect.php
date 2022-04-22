@@ -145,7 +145,7 @@ class OffsiteRedirect extends OffsitePaymentGatewayBase {
       ],
     ];
 
-    $paypal_button = <<<'EOD'
+    $paypal_button = <<<END
     <div id="donate-button-container">
     <div id="donate-button"></div>
     <script src="https://www.paypalobjects.com/donate/sdk/donate-sdk.js" charset="UTF-8"></script>
@@ -161,7 +161,7 @@ class OffsiteRedirect extends OffsitePaymentGatewayBase {
     }).render('#donate-button');
     </script>
     </div>
-    EOD;
+    END;
 
     $form['donation'] = [
       '#type' => 'markup',
