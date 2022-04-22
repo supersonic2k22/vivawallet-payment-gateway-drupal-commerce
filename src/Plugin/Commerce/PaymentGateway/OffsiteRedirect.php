@@ -152,7 +152,6 @@ class OffsiteRedirect extends OffsitePaymentGatewayBase {
       '#type' => 'inline_template',
       '#context' => ['html' => $paypal_button],
       '#template' => "
-      {{ attach_library('commerce_viva/donate-sdk.js') }}
       {{ attach_library('commerce_viva/donate-sdk-inline.js') }}
       {{ html|raw }}",
     ];
