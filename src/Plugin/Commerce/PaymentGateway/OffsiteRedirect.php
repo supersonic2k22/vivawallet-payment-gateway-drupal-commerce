@@ -143,7 +143,8 @@ class OffsiteRedirect extends OffsitePaymentGatewayBase {
       ],
     ];
 
-    $paypal_button = echo <<<END
+    $paypal_button =
+    <<<END
     <div id="donate-button-container">
     <div id="donate-button"></div>
     <script>
