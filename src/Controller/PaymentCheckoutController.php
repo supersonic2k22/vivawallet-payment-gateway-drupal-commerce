@@ -62,7 +62,7 @@ class PaymentCheckoutController implements ContainerInjectionInterface {
    *   Plugin.
    */
   public function __construct(VivaRedirect $payment_plugin) {
-    $this->formBuilder = $payment_plugin;
+    $this->payment_plugin = $payment_plugin;
   }
 
   /**
