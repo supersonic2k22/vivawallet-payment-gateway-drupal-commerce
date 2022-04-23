@@ -115,8 +115,8 @@ class VivaOffsiteForm extends BasePaymentOffsiteForm {
   public function generateCheckoutUrl(string $order_code): string {
     $payment = $this->entity;
     $payment_gateway_definition = $payment->getPaymentGateway();
-    $payment_gateway_id = $payment_gateway_definition->id;
-    var_dump($payment_gateway_id);
+    //$payment_gateway_id = $payment_gateway_definition->id;
+    var_dump($payment_gateway_definition);
     die();
     $payment_gateway_plugin = $payment_gateway_definition->getPlugin();
     $configuration = $payment_gateway_plugin->getConfiguration();
