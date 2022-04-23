@@ -94,10 +94,6 @@ class PaymentCheckoutController implements ContainerInjectionInterface {
    *   The route match.
    */
   public function returnSuccessPage(Request $request, RouteMatchInterface $route_match) {
-    watchdog_exception('test1', new \Exception(print_r(
-      $request->query->all(),
-      1
-    )));
     $transaction_id = $request->query->get('t');
     $order = $this->retrieveTransaction($transaction_id);
     // @todo calculate success step from the order.
@@ -121,10 +117,6 @@ class PaymentCheckoutController implements ContainerInjectionInterface {
    *   Response.
    */
   public function returnErrorPage(Request $request, RouteMatchInterface $route_match) {
-    watchdog_exception('test1', new \Exception(print_r(
-      $request->query->all(),
-      1
-    )));
     return ['#markup' => 'Error'];
   }
 
@@ -144,7 +136,7 @@ class PaymentCheckoutController implements ContainerInjectionInterface {
     /** @var \Drupal\commerce_payment\PaymentGatewayStorage $payment_storage */
     $payment_storage = $this->entityTypeManager->getStorage('commerce_payment_gateway');
     /** @var \Drupal\commerce_payment\Entity\PaymentGatewayInterface $payment_viva */
-    $payment_viva = $payment_storage->load('viva_wallet');
+    $payment_viva = getPaymentGatewayID();
     /** @var \Drupal\commerce_viva\Plugin\Commerce\PaymentGateway\OffsiteRedirect $payment_plugin */
     $payment_plugin = $payment_viva->getPlugin();
     $curl = curl_init();
