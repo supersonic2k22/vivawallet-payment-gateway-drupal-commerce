@@ -140,10 +140,7 @@ class PaymentCheckoutController implements ContainerInjectionInterface {
     /** @var \Drupal\commerce_viva\Plugin\Commerce\PaymentGateway\OffsiteRedirect $payment_plugin */
 
     $type = \Drupal::service('plugin.manager.service');
-    $payment_plugin = $type->getDefinition('commerce_viva');
-    var_dump($payment_plugin);
-    die();
-
+    $payment_plugin = \Drupal::getContainer()->get(OffsiteRedirect::class);
     $curl = curl_init();
     $url = $payment_plugin->resolveUrl('demo-api', 'api', "/checkout/v2/transactions/$transaction_id");
 
