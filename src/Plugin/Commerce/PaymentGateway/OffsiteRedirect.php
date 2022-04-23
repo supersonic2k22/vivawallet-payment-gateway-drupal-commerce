@@ -220,7 +220,7 @@ class OffsiteRedirect extends OffsitePaymentGatewayBase {
       $this->configuration['website_code'] = $values['website_code'];
       $this->configuration['client_id'] = $values['client_id'];
       $this->configuration['client_secret'] = $values['client_secret'];
-      $this->configuration['brand_color'] = filter_var($values['brand_color'], FILTER_SANITIZE_NUMBER_INT);
+      $this->configuration['brand_color'] = $values['brand_color'];
     }
   }
 
