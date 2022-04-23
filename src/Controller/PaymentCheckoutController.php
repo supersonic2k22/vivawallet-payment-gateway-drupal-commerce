@@ -13,7 +13,6 @@ use Psr\Log\LoggerInterface;
 use Symfony\Component\DependencyInjection\ContainerInterface;
 use Symfony\Component\HttpFoundation\RedirectResponse;
 use Symfony\Component\HttpFoundation\Request;
-use Drupal\commerce_viva\Plugin\Commerce\PaymentGateway\VivaRedirect;
 
 /**
  * Provides checkout endpoints for off-site payments.
@@ -47,23 +46,6 @@ class PaymentCheckoutController implements ContainerInjectionInterface {
    * @var \Drupal\Core\Entity\EntityTypeManagerInterface
    */
   protected $entityTypeManager;
-
-  /**
-   * Plugin.
-   *
-   * @var Drupal\commerce_viva\Plugin\Commerce\PaymentGateway\VivaRedirect
-   */
-  protected $payment_plugin;
-
-  /**
-   * Plugin..
-   *
-   * @param Drupal\commerce_viva\Plugin\Commerce\PaymentGateway\VivaRedirect
-   *   Plugin.
-   */
-  public function __construct(VivaRedirect $payment_plugin) {
-    $this->payment_plugin = $payment_plugin;
-  }
 
   /**
    * Constructs a new PaymentCheckoutController object.
@@ -156,6 +138,9 @@ class PaymentCheckoutController implements ContainerInjectionInterface {
     /** @var \Drupal\commerce_payment\Entity\PaymentGatewayInterface $payment_viva */
     //$payment_viva = \Drupal\commerce_viva\PluginForm\VivaRedirectVivaOffsiteForm::getPaymentGatewayID();
     /** @var \Drupal\commerce_viva\Plugin\Commerce\PaymentGateway\VivaRedirect $payment_plugin */
+
+    $payment = $this->entity;
+    $payment_plugin = $payment->getPaymentGateway()->getPlugin();
 
     $curl = curl_init();
     $url = $payment_plugin->resolveUrl('demo-api', 'api', "/checkout/v2/transactions/$transaction_id");
