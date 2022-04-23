@@ -120,7 +120,7 @@ class VivaOffsiteForm extends BasePaymentOffsiteForm {
     $url = $payment_gateway_plugin->resolveUrl('demo', 'www', '/web/checkout?ref=');
     $url .= $order_code;
     if ($brand_color) {
-      $filtered_brand_color = preg_replace("#", "", $brand_color);
+      $filtered_brand_color = preg_replace("/#/", "", $brand_color);
       $url .= '&color=' . $filtered_brand_color;
     }
     return $url;
