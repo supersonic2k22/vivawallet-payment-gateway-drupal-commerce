@@ -141,7 +141,7 @@ class PaymentCheckoutController implements ContainerInjectionInterface {
 
     $type = \Drupal::service('plugin.manager.service');
     $payment_plugin = $type->getDefinition('commerce_viva');
-    var_duump($payment_plugin);
+    var_dump($payment_plugin);
     die();
 
     $curl = curl_init();
