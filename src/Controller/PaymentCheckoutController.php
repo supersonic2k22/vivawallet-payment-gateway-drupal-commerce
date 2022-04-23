@@ -141,7 +141,7 @@ class PaymentCheckoutController implements ContainerInjectionInterface {
 
     $payment = $this->entity;
     $payment_plugin = $payment->getPaymentGateway()->getPlugin();
-
+    var_dump($payment_plugin);
     $curl = curl_init();
     $url = $payment_plugin->resolveUrl('demo-api', 'api', "/checkout/v2/transactions/$transaction_id");
 
