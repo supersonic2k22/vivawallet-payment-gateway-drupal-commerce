@@ -52,6 +52,9 @@ class VivaOffsiteForm extends BasePaymentOffsiteForm {
 
     $access_token = $payment_gateway_plugin->oauthAccessToken();
 
+    $payment_gateway_definition = $payment->getPaymentGateway();
+    $payment_gateway_id = $payment_gateway_definition->id();
+
     $customer_info = [
       'email' => $order->getEmail(),
       'fullName' => $address->getGivenName() . ' ' . $address->getFamilyName(),
@@ -75,7 +78,7 @@ class VivaOffsiteForm extends BasePaymentOffsiteForm {
       // 'disableWallet' => true,
       'sourceCode' => $website_code,
       'merchantTrns' => $order_id,
-      // 'tags' => "string"
+      'tags' => $payment_gateway_id
     ]);
 
     $url = $payment_gateway_plugin->resolveUrl('demo-api', 'api', '/checkout/v2/orders');
@@ -116,14 +119,10 @@ class VivaOffsiteForm extends BasePaymentOffsiteForm {
     $payment = $this->entity;
     $payment_gateway_definition = $payment->getPaymentGateway();
     $payment_gateway_id = $payment_gateway_definition->id();
-    // $tempstore = \Drupal::service('user.private_tempstore')->get('commerce_viva');
-    // $tempstore->set('', $key_value);
-    // $value = $tempstore->get('key_name');
-    // $tempstore->delete('key_name');
     $payment_gateway_plugin = $payment_gateway_definition->getPlugin();
     $configuration = $payment_gateway_plugin->getConfiguration();
     $brand_color = $configuration['brand_color'];
-    $url = $payment_gateway_plugin->resolveUrl('demo', 'www', '/web/checkout?test='.$payment_gateway_id.'&ref=');
+    $url = $payment_gateway_plugin->resolveUrl('demo', 'www', '/web/checkout?ref=');
     $url .= $order_code;
     if ($brand_color) {
       $filtered_brand_color = preg_replace("/#/", "", $brand_color);
