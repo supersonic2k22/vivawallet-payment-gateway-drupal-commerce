@@ -95,6 +95,9 @@ class PaymentCheckoutController implements ContainerInjectionInterface {
    */
   public function returnSuccessPage(Request $request, RouteMatchInterface $route_match) {
     $transaction_id = $request->query->get('t');
+    $test = $request->query->get('test');
+    var_dump($test);
+    die();
     $order = $this->retrieveTransaction($transaction_id);
     // @todo calculate success step from the order.
     $step = 'success';
@@ -136,7 +139,7 @@ class PaymentCheckoutController implements ContainerInjectionInterface {
     /** @var \Drupal\commerce_payment\PaymentGatewayStorage $payment_storage */
     $payment_storage = $this->entityTypeManager->getStorage('commerce_payment_gateway');
     /** @var \Drupal\commerce_payment\Entity\PaymentGatewayInterface $payment_viva */
-    $payment_viva = getPaymentGatewayID();
+    //$payment_viva = \Drupal\commerce_viva\PluginForm\OffsiteRedirectVivaOffsiteForm::getPaymentGatewayID();
     /** @var \Drupal\commerce_viva\Plugin\Commerce\PaymentGateway\OffsiteRedirect $payment_plugin */
     $payment_plugin = $payment_viva->getPlugin();
     $curl = curl_init();

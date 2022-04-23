@@ -120,8 +120,6 @@ class VivaOffsiteForm extends BasePaymentOffsiteForm {
     // $tempstore->set('', $key_value);
     // $value = $tempstore->get('key_name');
     // $tempstore->delete('key_name');
-    var_dump($payment_gateway_id);
-    die();
     $payment_gateway_plugin = $payment_gateway_definition->getPlugin();
     $configuration = $payment_gateway_plugin->getConfiguration();
     $brand_color = $configuration['brand_color'];
