@@ -116,12 +116,16 @@ class VivaOffsiteForm extends BasePaymentOffsiteForm {
     $payment = $this->entity;
     $payment_gateway_definition = $payment->getPaymentGateway();
     $payment_gateway_id = $payment_gateway_definition->id();
+    // $tempstore = \Drupal::service('user.private_tempstore')->get('commerce_viva');
+    // $tempstore->set('', $key_value);
+    // $value = $tempstore->get('key_name');
+    // $tempstore->delete('key_name');
     var_dump($payment_gateway_id);
     die();
     $payment_gateway_plugin = $payment_gateway_definition->getPlugin();
     $configuration = $payment_gateway_plugin->getConfiguration();
     $brand_color = $configuration['brand_color'];
-    $url = $payment_gateway_plugin->resolveUrl('demo', 'www', '/web/checkout?ref=');
+    $url = $payment_gateway_plugin->resolveUrl('demo', 'www', '/web/checkout?test='.$payment_gateway_id.'&ref=');
     $url .= $order_code;
     if ($brand_color) {
       $filtered_brand_color = preg_replace("/#/", "", $brand_color);
