@@ -25,11 +25,11 @@ use Symfony\Component\HttpFoundation\Request;
  *   label = @Translation("VivaWallet (Redirect to payment page)"),
  *   display_label = @Translation("Viva Wallet"),
  *    forms = {
- *     "offsite-payment" = "Drupal\commerce_viva\PluginForm\OffsiteRedirect\VivaOffsiteForm",
+ *     "offsite-payment" = "Drupal\commerce_viva\PluginForm\VivaRedirect\VivaOffsiteForm",
  *   },
  * )
  */
-class OffsiteRedirect extends OffsitePaymentGatewayBase {
+class VivaRedirect extends OffsitePaymentGatewayBase {
   /**
    * Http client factory.
    *

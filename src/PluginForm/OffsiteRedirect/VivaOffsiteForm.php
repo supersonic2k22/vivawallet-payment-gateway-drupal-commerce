@@ -1,6 +1,6 @@
 <?php
 
-namespace Drupal\commerce_viva\PluginForm\OffsiteRedirect;
+namespace Drupal\commerce_viva\PluginForm\VivaRedirect;
 
 use Drupal\commerce_order\Entity\Order;
 use Drupal\commerce_payment\PluginForm\PaymentOffsiteForm as BasePaymentOffsiteForm;
