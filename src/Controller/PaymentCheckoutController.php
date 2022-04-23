@@ -51,9 +51,19 @@ class PaymentCheckoutController implements ContainerInjectionInterface {
   /**
    * Plugin.
    *
-   * @var use Drupal\commerce_viva\Plugin\Commerce\PaymentGateway\VivaRedirect
+   * @var Drupal\commerce_viva\Plugin\Commerce\PaymentGateway\VivaRedirect
    */
   protected $payment_plugin;
+
+  /**
+   * Plugin..
+   *
+   * @param Drupal\commerce_viva\Plugin\Commerce\PaymentGateway\VivaRedirect
+   *   Plugin.
+   */
+  public function __construct(VivaRedirect $payment_plugin) {
+    $this->formBuilder = $payment_plugin;
+  }
 
   /**
    * Constructs a new PaymentCheckoutController object.
