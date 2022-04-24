@@ -24,7 +24,6 @@ class VivaOffsiteForm extends BasePaymentOffsiteForm {
    * @throws \JsonException
    */
 public function vivawalletOrderCode(): ?string {
-  {
     $payment = $this->entity;
     $amount = round(number_format($payment->getAmount()
       ->getNumber(), 2, '.', '') * 100);
@@ -39,8 +38,8 @@ public function vivawalletOrderCode(): ?string {
           '@customer_name' => $customer->getAccountName(),
           '@order_id' => $order_id,
         ]);
-  }
-  else {
+    }
+    else {
       $description = $this->t('Customer: anonymous');
     }
 
@@ -113,8 +112,7 @@ public function vivawalletOrderCode(): ?string {
    * @return string
    *   Checkout url.
    */
-  public function generateCheckoutUrl(string $order_code): string
-  {
+  public function generateCheckoutUrl(string $order_code): string {
     $payment = $this->entity;
     $payment_gateway_plugin = $payment->getPaymentGateway()->getPlugin();
     $configuration = $payment_gateway_plugin->getConfiguration();
@@ -131,7 +129,7 @@ public function vivawalletOrderCode(): ?string {
   /**
    * {@inheritdoc}
    */
-  public function buildConfigurationForm(array $form, FormStateInterface $form_state){
+  public function buildConfigurationForm(array $form, FormStateInterface $form_state) {
     $form = parent::buildConfigurationForm($form, $form_state);
 
     $redirect_method = 'post';
