@@ -54,9 +54,6 @@ class VivaOffsiteForm extends BasePaymentOffsiteForm
 
     $access_token = $payment_gateway_plugin->oauthAccessToken();
 
-    $payment_gateway_definition = $payment->getPaymentGateway();
-    $payment_gateway_id = $payment_gateway_definition->id();
-
     $customer_info = [
       'email' => $order->getEmail(),
       'fullName' => $address->getGivenName() . ' ' . $address->getFamilyName(),
@@ -120,7 +117,7 @@ class VivaOffsiteForm extends BasePaymentOffsiteForm
   public function generateCheckoutUrl(string $order_code): string
   {
     $payment = $this->entity;
-    $payment_gateway_plugin = $payment_gateway_definition->getPlugin();
+    $payment_gateway_plugin = $payment->getPaymentGateway()->getPlugin();
     $configuration = $payment_gateway_plugin->getConfiguration();
     $brand_color = $configuration['brand_color'];
     $url = $payment_gateway_plugin->resolveUrl('demo', 'www', '/web/checkout?ref=');
