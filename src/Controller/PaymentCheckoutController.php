@@ -136,7 +136,7 @@ class PaymentCheckoutController implements ContainerInjectionInterface {
     /** @var \Drupal\commerce_payment\PaymentGatewayStorage $payment_storage */
     $payment_storage = $this->entityTypeManager->getStorage('commerce_payment_gateway');
     /** @var \Drupal\commerce_payment\Entity\PaymentGatewayInterface $payment_viva */
-    //$payment_viva = \Drupal\commerce_viva\PluginForm\VivaRedirectVivaOffsiteForm::getPaymentGatewayID();
+    //$payment_viva = \Drupal\commerce_viva\PluginForm\VivaRedirect\VivaOffsiteForm::getPaymentGatewayID();
     /** @var \Drupal\commerce_viva\Plugin\Commerce\PaymentGateway\VivaRedirect $payment_plugin */
 
     $payment = $this->entity;
