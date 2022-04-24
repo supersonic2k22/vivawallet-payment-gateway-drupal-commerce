@@ -23,7 +23,7 @@ class VivaOffsiteForm extends BasePaymentOffsiteForm {
    *
    * @throws \JsonException
    */
-public function vivawalletOrderCode(): ?string {
+  public function vivawalletOrderCode(): ?string {
     $payment = $this->entity;
     $amount = round(number_format($payment->getAmount()
       ->getNumber(), 2, '.', '') * 100);
@@ -124,6 +124,7 @@ public function vivawalletOrderCode(): ?string {
       $url .= '&color=' . $filtered_brand_color;
     }
     return $url;
+
   }
 
   /**
@@ -151,4 +152,5 @@ public function vivawalletOrderCode(): ?string {
       $redirect_method
     );
   }
+ 
 }
