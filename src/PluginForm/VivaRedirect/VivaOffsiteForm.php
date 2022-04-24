@@ -11,8 +11,7 @@ use Drupal\Core\StringTranslation\StringTranslationTrait;
 /**
  * Viva payment off-site form.
  */
-class VivaOffsiteForm extends BasePaymentOffsiteForm
-{
+class VivaOffsiteForm extends BasePaymentOffsiteForm {
 
   use StringTranslationTrait;
 
