@@ -2,7 +2,7 @@
 
 namespace Drupal\commerce_viva\Controller;
 
-use Drupal\commerce_checkout\CheckoutOrderManagerInterface;
+use Drupal\commerce_payment\Entity\PaymentGatewayInterface;
 use Drupal\Component\Serialization\Json;
 use Drupal\Core\DependencyInjection\ContainerInjectionInterface;
 use Drupal\Core\Entity\EntityTypeManagerInterface;
@@ -18,13 +18,6 @@ use Symfony\Component\HttpFoundation\Request;
  * Provides checkout endpoints for off-site payments.
  */
 class PaymentCheckoutController implements ContainerInjectionInterface {
-
-  /**
-   * The checkout order manager.
-   *
-   * @var \Drupal\commerce_checkout\CheckoutOrderManagerInterface
-   */
-  protected $checkoutOrderManager;
 
   /**
    * The messenger.
@@ -50,8 +43,6 @@ class PaymentCheckoutController implements ContainerInjectionInterface {
   /**
    * Constructs a new PaymentCheckoutController object.
    *
-   * @param \Drupal\commerce_checkout\CheckoutOrderManagerInterface $checkout_order_manager
-   *   The checkout order manager.
    * @param \Drupal\Core\Messenger\MessengerInterface $messenger
    *   The messenger.
    * @param \Psr\Log\LoggerInterface $logger
@@ -60,12 +51,10 @@ class PaymentCheckoutController implements ContainerInjectionInterface {
    *   The entity type manager.
    */
   public function __construct(
-    CheckoutOrderManagerInterface $checkout_order_manager,
     MessengerInterface $messenger,
     LoggerInterface $logger,
     EntityTypeManagerInterface $entity_type_manager
   ) {
-    $this->checkoutOrderManager = $checkout_order_manager;
     $this->messenger = $messenger;
     $this->logger = $logger;
     $this->entityTypeManager = $entity_type_manager;
@@ -76,7 +65,6 @@ class PaymentCheckoutController implements ContainerInjectionInterface {
    */
   public static function create(ContainerInterface $container) {
     return new static(
-      $container->get('commerce_checkout.checkout_order_manager'),
       $container->get('messenger'),
       $container->get('logger.channel.commerce_payment'),
       $container->get('entity_type.manager')
@@ -88,14 +76,14 @@ class PaymentCheckoutController implements ContainerInjectionInterface {
    *
    * Redirects to the next checkout page, completing checkout.
    *
+   * @param \Drupal\commerce_payment\Entity\PaymentGatewayInterface $payment_gateway
+   *   Payment getaway responsible to process request to the controller.
    * @param \Symfony\Component\HttpFoundation\Request $request
    *   The request.
-   * @param \Drupal\Core\Routing\RouteMatchInterface $route_match
-   *   The route match.
    */
-  public function returnSuccessPage(Request $request, RouteMatchInterface $route_match) {
+  public function returnSuccessPage(PaymentGatewayInterface $payment_gateway, Request $request) {
     $transaction_id = $request->query->get('t');
-    $order = $this->retrieveTransaction($transaction_id);
+    $order = $this->retrieveTransaction($payment_gateway, $transaction_id);
     // @todo calculate success step from the order.
     $step = 'success';
     return new RedirectResponse(Url::fromRoute('commerce_payment.checkout.return', [
@@ -123,6 +111,8 @@ class PaymentCheckoutController implements ContainerInjectionInterface {
   /**
    * Order entity getter based on the transaction ID.
    *
+   * @param \Drupal\commerce_payment\Entity\PaymentGatewayInterface $payment_gateway
+   *   Payment getaway responsible to process request to the controller.
    * @param string $transaction_id
    *   Transaction ID.
    *
@@ -132,13 +122,9 @@ class PaymentCheckoutController implements ContainerInjectionInterface {
    * @throws \Drupal\Component\Plugin\Exception\InvalidPluginDefinitionException
    * @throws \Drupal\Component\Plugin\Exception\PluginNotFoundException
    */
-  public function retrieveTransaction(string $transaction_id) {
-    /** @var \Drupal\commerce_payment\PaymentGatewayStorage $payment_storage */
-    $payment_storage = $this->entityTypeManager->getStorage('commerce_payment_gateway');
-    /** @var \Drupal\commerce_payment\Entity\PaymentGatewayInterface $payment_viva */
-    $payment_viva = $payment_storage->load('vivawallet');
+  public function retrieveTransaction(PaymentGatewayInterface $payment_gateway, string $transaction_id) {
     /** @var \Drupal\commerce_viva\Plugin\Commerce\PaymentGateway\OffsiteRedirect $payment_plugin */
-    $payment_plugin = $payment_viva->getPlugin();
+    $payment_plugin = $payment_gateway->getPlugin();
     $curl = curl_init();
     $url = $payment_plugin->resolveUrl('demo-api', 'api', "/checkout/v2/transactions/$transaction_id");
 

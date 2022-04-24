@@ -1,14 +1,23 @@
 commerce_viva.order_success:
-  path: '/viva/success-payment'
+  path: '/viva/{payment_gateway}/success'
   defaults:
     _controller: '\Drupal\commerce_viva\Controller\PaymentCheckoutController::returnSuccessPage'
   requirements:
     # Needs to be accessed by an anonymous user.
     _access: 'TRUE'
+  options:
+    parameters:
+      payment_gateway:
+        type: entity:commerce_payment_gateway
+
 commerce_viva.order_error:
-  path: '/viva/error-payment'
+  path: '/viva/{payment_gateway}/error'
   defaults:
     _controller: '\Drupal\commerce_viva\Controller\PaymentCheckoutController::returnErrorPage'
   requirements:
     # Needs to be accessed by an anonymous user.
     _access: 'TRUE'
+  options:
+    parameters:
+      payment_gateway:
+        type: entity:commerce_payment_gateway

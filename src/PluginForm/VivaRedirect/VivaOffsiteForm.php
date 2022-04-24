@@ -6,14 +6,11 @@ use Drupal\commerce_order\Entity\Order;
 use Drupal\commerce_payment\PluginForm\PaymentOffsiteForm as BasePaymentOffsiteForm;
 use Drupal\Component\Serialization\Json;
 use Drupal\Core\Form\FormStateInterface;
-use Drupal\Core\StringTranslation\StringTranslationTrait;
 
 /**
  * Viva payment off-site form.
  */
 class VivaOffsiteForm extends BasePaymentOffsiteForm {
-
-  use StringTranslationTrait;
 
   /**
    * Generate order code for the order entity.
@@ -152,5 +149,5 @@ class VivaOffsiteForm extends BasePaymentOffsiteForm {
       $redirect_method
     );
   }
- 
+
 }

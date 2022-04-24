@@ -4,5 +4,8 @@ description: 'Viva Wallet payment gateway.'
 package: Commerce
 core_version_requirement: ^8 || ^9 || ^10
 dependencies:
-  - commerce:commerce_payment
   - commerce:commerce
+  - commerce:commerce_checkout
+  - commerce:commerce_order
+  - commerce:commerce_payment
+  - commerce:commerce_price

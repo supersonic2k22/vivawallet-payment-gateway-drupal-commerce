@@ -114,34 +114,41 @@ class VivaRedirect extends OffsitePaymentGatewayBase {
       ]
     );
 
-    $form['info'] = [
-      '#type' => 'details',
-      '#title' => $this->t('Account configuration info'),
-      '#open' => TRUE,
-      'redirect_link' => [
-        '#type' => 'html_tag',
-        '#tag' => 'p',
-        '#value' => $this->t(
-          'To successful work of plugin please use in redirect that links:<br /> - <b>%success_redirect</b> (for success) <br /> - <b>%error_redirect</b> (for failure)',
-          [
-            '%success_redirect' => Url::fromRoute(
-              'commerce_viva.order_success',
-              [],
-              [
-                'absolute' => TRUE,
-              ]
-            )->toString(),
-            '%error_redirect' => Url::fromRoute(
-              'commerce_viva.order_error',
-              [],
-              [
-                'absolute' => TRUE,
-              ]
-            )->toString(),
-          ]
-        ),
-      ],
-    ];
+    $payment_gateway = $form_state->getFormObject()->getEntity();
+    if (!$payment_gateway->isNew()) {
+      $form['info'] = [
+        '#type' => 'details',
+        '#title' => $this->t('Account configuration info'),
+        '#open' => TRUE,
+        'redirect_link' => [
+          '#type' => 'html_tag',
+          '#tag' => 'p',
+          '#value' => $this->t(
+            'To successful work of plugin please use in redirect that links:<br /> - <b>%success_redirect</b> (for success) <br /> - <b>%error_redirect</b> (for failure)',
+            [
+              '%success_redirect' => Url::fromRoute(
+                'commerce_viva.order_success',
+                [
+                  'payment_gateway' => $payment_gateway->id(),
+                ],
+                [
+                  'absolute' => TRUE,
+                ]
+              )->toString(),
+              '%error_redirect' => Url::fromRoute(
+                'commerce_viva.order_error',
+                [
+                  'payment_gateway' => $payment_gateway->id(),
+                ],
+                [
+                  'absolute' => TRUE,
+                ]
+              )->toString(),
+            ]
+          ),
+        ],
+      ];
+    }
 
     $form['donation'] = [
       '#type' => 'container',
@@ -152,7 +159,6 @@ class VivaRedirect extends OffsitePaymentGatewayBase {
         '#attached' => ['library' => ['commerce_viva/donate-sdk-inline.js']],
       ],
     ];
-
 
     $form['merchant_id'] = [
       '#type' => 'textfield',
