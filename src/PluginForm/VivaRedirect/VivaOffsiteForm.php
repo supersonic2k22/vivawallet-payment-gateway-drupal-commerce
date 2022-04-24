@@ -11,7 +11,8 @@ use Drupal\Core\StringTranslation\StringTranslationTrait;
 /**
  * Viva payment off-site form.
  */
-class VivaOffsiteForm extends BasePaymentOffsiteForm {
+class VivaOffsiteForm extends BasePaymentOffsiteForm
+{
 
   use StringTranslationTrait;
 
@@ -23,7 +24,8 @@ class VivaOffsiteForm extends BasePaymentOffsiteForm {
    *
    * @throws \JsonException
    */
-  public function vivawalletOrderCode(): ?string {
+  public function vivawalletOrderCode(): ?string
+  {
     $payment = $this->entity;
     $amount = round(number_format($payment->getAmount()
       ->getNumber(), 2, '.', '') * 100);
@@ -37,9 +39,9 @@ class VivaOffsiteForm extends BasePaymentOffsiteForm {
         [
           '@customer_name' => $customer->getAccountName(),
           '@order_id' => $order_id,
-        ]);
-    }
-    else {
+        ]
+      );
+    } else {
       $description = $this->t('Customer: anonymous');
     }
 
@@ -78,7 +80,7 @@ class VivaOffsiteForm extends BasePaymentOffsiteForm {
       // 'disableWallet' => true,
       'sourceCode' => $website_code,
       'merchantTrns' => $order_id,
-      'tags' => $payment_gateway_id
+      // 'tags' => "string"
     ]);
 
     $url = $payment_gateway_plugin->resolveUrl('demo-api', 'api', '/checkout/v2/orders');
@@ -115,10 +117,9 @@ class VivaOffsiteForm extends BasePaymentOffsiteForm {
    * @return string
    *   Checkout url.
    */
-  public function generateCheckoutUrl(string $order_code): string {
+  public function generateCheckoutUrl(string $order_code): string
+  {
     $payment = $this->entity;
-    $payment_gateway_definition = $payment->getPaymentGateway();
-    $payment_gateway_id = $payment_gateway_definition->id();
     $payment_gateway_plugin = $payment_gateway_definition->getPlugin();
     $configuration = $payment_gateway_plugin->getConfiguration();
     $brand_color = $configuration['brand_color'];
@@ -129,13 +130,13 @@ class VivaOffsiteForm extends BasePaymentOffsiteForm {
       $url .= '&color=' . $filtered_brand_color;
     }
     return $url;
-
   }
 
   /**
    * {@inheritdoc}
    */
-  public function buildConfigurationForm(array $form, FormStateInterface $form_state) {
+  public function buildConfigurationForm(array $form, FormStateInterface $form_state)
+  {
     $form = parent::buildConfigurationForm($form, $form_state);
 
     $redirect_method = 'post';
@@ -157,5 +158,4 @@ class VivaOffsiteForm extends BasePaymentOffsiteForm {
       $redirect_method
     );
   }
-
 }
