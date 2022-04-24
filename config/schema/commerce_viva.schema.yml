@@ -16,3 +16,6 @@ commerce_viva.commerce_payment_gateway.plugin.viva_redirect_checkout:
     client_secret:
       type: string
       label: 'Client Secret'
+    brand_color:
+      type: string
+      label: 'Brand color'

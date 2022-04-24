@@ -1,7 +1,6 @@
 INTRODUCTION
 ------------
 Viva Payment Gateway module allows the admin to set up the Viva payment method on their store. The customer can select the Viva Payment Gateway as the payment method and enter their payment details for payment purposes.
-We support Visa, Visa Electron, Mastercard and Maestro bank cards from any country as well as several other payment methods such as Qiwi, Yandex, Privat24, cash payments, PayPal, SEPA, Swift, online banking with Ukrainian, Russian and European banks, partial payments, credit payments and Direct Debit.
 
 
 REQUIREMENTS
@@ -16,18 +15,31 @@ INSTALLATION
 
 * Unzip archive then
 * Install module "{your_site}/admin/modules/install"
+1. Install plugin. Extended -> Select checkbox - "
+   Viva Wallet Commerce Payment Gateway", click install.
+2. Add new payment gateway. Login as Admin in Drupal and choose Commerce -> Configuration -> Payment -> Payment Gateways -> Add payment gateway. You can enter your name, for example - Viva Wallet.
 
-1. Login as Admin in Drupal and choose Modules -> "COMMERCE (PAYMENT) Viva". Check "Commerce Viva" and Save.
+<img src="Screenshot_1.png" width='400px'>
 
-2. Configure payment module.
-![Скриншот][1]
+> 3. If you not see - Viva Wallet in options, please clean cache of site.
+>
+><img src="Screenshot_2.png" width='200px'>
 
 
 CONFIGURATION
 ------------
 
-1. Enter your Merchant Id and API key from Fondy Merchant Portal.
-![Скриншот][2]
+1. Enter your Merchant Id and API key from Viva Wallet Merchant Portal.
+2. Enter you Client Id and Secret key from Viva Wallet Smart Checkout credentials.
 
-[1]: https://raw.githubusercontent.com/cloudipsp/drupal/master/for_drupal8.x_commerce2.x/Screenshot_1.png
-[2]: https://raw.githubusercontent.com/cloudipsp/drupal/master/for_drupal8.x_commerce2.x/Screenshot_2.png
+> Important: we have two modes - demo and live, so credentials must be different for both of modes
+>
+>Demo credentials here - https://demo.vivapayments.com/en/signup
+>
+> Live credentials here - https://app.vivawallet.com/register/
+
+<img src="Screenshot_3.png" width='400px'>
+
+>Website code you can see in Sales -> Online payments -> Websites/apps -> code
+>
+> <img src="Screenshot_4.png" width='400px'>

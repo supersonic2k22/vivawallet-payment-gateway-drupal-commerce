@@ -1,31 +1,46 @@
 <?php
 
-namespace Drupal\commerce_viva\PluginForm\OffsiteRedirect;
+namespace Drupal\commerce_viva\PluginForm\VivaRedirect;
 
 use Drupal\commerce_order\Entity\Order;
-use Drupal\commerce_payment\Entity\PaymentGatewayInterface;
 use Drupal\commerce_payment\PluginForm\PaymentOffsiteForm as BasePaymentOffsiteForm;
-use Drupal\commerce_viva\Plugin\Commerce\PaymentGateway\OffsiteRedirect;
+use Drupal\Component\Serialization\Json;
 use Drupal\Core\Form\FormStateInterface;
+use Drupal\Core\StringTranslation\StringTranslationTrait;
 
-class VivaOffsiteForm extends BasePaymentOffsiteForm
-{
+/**
+ * Viva payment off-site form.
+ */
+class VivaOffsiteForm extends BasePaymentOffsiteForm {
 
-  public function vivawalletOrderCode()
-  {
-    //Viva
+  use StringTranslationTrait;
+
+  /**
+   * Generate order code for the order entity.
+   *
+   * @return string|null
+   *   Order code.
+   *
+   * @throws \JsonException
+   */
+  public function vivawalletOrderCode(): ?string {
     $payment = $this->entity;
     $amount = round(number_format($payment->getAmount()
-        ->getNumber(), 2, '.', '') * 100);
+      ->getNumber(), 2, '.', '') * 100);
     $order_id = \Drupal::routeMatch()->getParameter('commerce_order')->id();
     $order = Order::load($order_id);
     $address = $order->getBillingProfile()->address->first();
-    if ($payment->getOrder()->getCustomer()->isAnonymous() === FALSE) {
-      $description = t('Customer: ') . $payment->getOrder()
-          ->getCustomer()
-          ->getAccountName() . '. ' . t('Order #: ') . $order_id;
-    } else {
-      $description = t('Customer: anonymous');
+    $customer = $payment->getOrder()->getCustomer();
+    if ($customer->isAnonymous() === FALSE) {
+      $description = $this->t(
+        'Customer: @customer_name. Order #: @order_id',
+        [
+          '@customer_name' => $customer->getAccountName(),
+          '@order_id' => $order_id,
+        ]);
+    }
+    else {
+      $description = $this->t('Customer: anonymous');
     }
 
     $curl = curl_init();
@@ -35,76 +50,92 @@ class VivaOffsiteForm extends BasePaymentOffsiteForm
 
     $website_code = $configuration['website_code'];
 
-    $basic_access_token = $payment_gateway_plugin->basicAuthAccessToken($payment_gateway_plugin);
-    $access_token  = $payment_gateway_plugin->oauthAccessToken();
+    $access_token = $payment_gateway_plugin->oauthAccessToken();
+
+    $payment_gateway_definition = $payment->getPaymentGateway();
+    $payment_gateway_id = $payment_gateway_definition->id();
 
     $customer_info = [
       'email' => $order->getEmail(),
-      'fullName' => $address->getGivenName(),
-      //'phone' => '',
-      //'countryCode' => '',
-      //'requestLang' => 'en-GB'
-      ];
+      'fullName' => $address->getGivenName() . ' ' . $address->getFamilyName(),
+      // 'phone' => '',
+      // 'countryCode' => '',
+      'requestLang' => \Drupal::currentUser()->getPreferredLangcode(FALSE) ?: \Drupal::languageManager()->getCurrentLanguage()->getId(),
+    ];
 
-    $order_info = json_encode([
+    $order_info = Json::encode([
       'amount' => (int) $amount,
       'customerTrns' => $description,
-      'customer'=> $customer_info,
-      //'paymentTimeout'=> 0,
-      //'preauth'=> true,
-      //'allowRecurring'=> true,
-      //'maxInstallments'=> 0,
-      //'paymentNotification'=> true,
-      //'tipAmount'=> 1,
-      //'disableExactAmount' => true,
-      //'disableCash' => true,
-      //'disableWallet' => true,
+      'customer' => $customer_info,
+      // 'paymentTimeout'=> 0,
+      // 'preauth'=> true,
+      // 'allowRecurring'=> true,
+      // 'maxInstallments'=> 0,
+      // 'paymentNotification'=> true,
+      // 'tipAmount'=> 1,
+      // 'disableExactAmount' => true,
+      // 'disableCash' => true,
+      // 'disableWallet' => true,
       'sourceCode' => $website_code,
       'merchantTrns' => $order_id,
-      //'tags' => "string"
+      'tags' => $payment_gateway_id
     ]);
 
-    $url = $payment_gateway_plugin->resolveUrl('demo-api','api','/checkout/v2/orders');
+    $url = $payment_gateway_plugin->resolveUrl('demo-api', 'api', '/checkout/v2/orders');
 
-    curl_setopt_array($curl, array(
+    curl_setopt_array($curl, [
       CURLOPT_URL => $url,
-      CURLOPT_RETURNTRANSFER => true,
+      CURLOPT_RETURNTRANSFER => TRUE,
       CURLOPT_ENCODING => '',
       CURLOPT_MAXREDIRS => 10,
       CURLOPT_TIMEOUT => 0,
-      CURLOPT_FOLLOWLOCATION => true,
+      CURLOPT_FOLLOWLOCATION => TRUE,
       CURLOPT_HTTP_VERSION => CURL_HTTP_VERSION_1_1,
       CURLOPT_CUSTOMREQUEST => 'POST',
       CURLOPT_POSTFIELDS => $order_info,
-      CURLOPT_HTTPHEADER => array(
-        'Authorization: Bearer '.$access_token,
-        'Content-Type: application/json'
-      ),
-    ));
+      CURLOPT_HTTPHEADER => [
+        'Authorization: Bearer ' . $access_token,
+        'Content-Type: application/json',
+      ],
+    ]);
 
     $response = curl_exec($curl);
     curl_close($curl);
 
-    $response = json_decode($response, true);
-    $code_url = $response['orderCode'] ? : NULL;
-
-    return $code_url;
-
-    //Viva
+    $response = Json::decode($response);
+    return $response['orderCode'] ?: NULL;
   }
 
-  public function generateCheckoutUrl(string $order_code)
-  {
+  /**
+   * Checkout URL getter.
+   *
+   * @param string $order_code
+   *   Order code.
+   *
+   * @return string
+   *   Checkout url.
+   */
+  public function generateCheckoutUrl(string $order_code): string {
     $payment = $this->entity;
-    $payment_gateway_plugin = $payment->getPaymentGateway()->getPlugin();
-    $url = $payment_gateway_plugin->resolveUrl('demo','www','/web/checkout?ref=');
-    $order_code_url = $url.$order_code;
-    return $order_code_url;
+    $payment_gateway_definition = $payment->getPaymentGateway();
+    $payment_gateway_id = $payment_gateway_definition->id();
+    $payment_gateway_plugin = $payment_gateway_definition->getPlugin();
+    $configuration = $payment_gateway_plugin->getConfiguration();
+    $brand_color = $configuration['brand_color'];
+    $url = $payment_gateway_plugin->resolveUrl('demo', 'www', '/web/checkout?ref=');
+    $url .= $order_code;
+    if ($brand_color) {
+      $filtered_brand_color = preg_replace("/#/", "", $brand_color);
+      $url .= '&color=' . $filtered_brand_color;
+    }
+    return $url;
 
   }
 
-  public function buildConfigurationForm(array $form, FormStateInterface $form_state)
-  {
+  /**
+   * {@inheritdoc}
+   */
+  public function buildConfigurationForm(array $form, FormStateInterface $form_state) {
     $form = parent::buildConfigurationForm($form, $form_state);
 
     $redirect_method = 'post';
@@ -118,17 +149,13 @@ class VivaOffsiteForm extends BasePaymentOffsiteForm
       $order->save();
     }
 
-    $f_data = [];
-
-
     return $this->buildRedirectForm(
       $form,
       $form_state,
       $redirect_url,
-      $f_data,
+      [],
       $redirect_method
     );
-
   }
 
 }
