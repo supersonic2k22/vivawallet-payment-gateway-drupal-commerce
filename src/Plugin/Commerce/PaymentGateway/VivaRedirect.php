@@ -143,17 +143,14 @@ class VivaRedirect extends OffsitePaymentGatewayBase {
       ],
     ];
 
-    $paypal_button = "
-    <div id=\"donate-button-container\">
-    <div id=\"donate-button\"></div>
-    </div>";
-
     $form['donation'] = [
-      '#type' => 'inline_template',
-      '#context' => ['html' => $paypal_button],
-      '#template' => "
-      {{ attach_library('commerce_viva/donate-sdk-inline.js') }}
-      {{ html|raw }}",
+      '#type' => 'container',
+      '#attributes' => ['id' => 'donate-button-container'],
+      'button' => [
+        '#type' => 'container',
+        '#attributes' => ['id' => 'donate-button'],
+        '#attached' => ['libraries' => ['commerce_viva/donate-sdk-inline.js']],
+      ],
     ];
 
 
