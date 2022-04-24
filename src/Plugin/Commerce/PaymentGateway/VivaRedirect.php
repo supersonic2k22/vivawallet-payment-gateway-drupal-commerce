@@ -121,7 +121,7 @@ class VivaRedirect extends OffsitePaymentGatewayBase {
       'redirect_link' => [
         '#type' => 'html_tag',
         '#tag' => 'p',
-        '#default_value' => $this->t(
+        '#value' => $this->t(
           'To successful work of plugin please use in redirect that links:<br /> - <b>%success_redirect</b> (for success) <br /> - <b>%error_redirect</b> (for failure)',
           [
             '%success_redirect' => Url::fromRoute(
@@ -143,7 +143,7 @@ class VivaRedirect extends OffsitePaymentGatewayBase {
       ],
     ];
 
-    $paypal_button ="
+    $paypal_button = "
     <div id=\"donate-button-container\">
     <div id=\"donate-button\"></div>
     </div>";
