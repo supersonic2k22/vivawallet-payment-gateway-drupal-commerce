@@ -156,7 +156,7 @@ class VivaRedirect extends OffsitePaymentGatewayBase {
       'button' => [
         '#type' => 'container',
         '#attributes' => ['id' => 'donate-button'],
-        '#attached' => ['library' => ['commerce_viva/donate-sdk-inline.js']],
+        '#attached' => ['library' => ['commerce_viva/donate-sdk-inline']],
       ],
     ];
 
